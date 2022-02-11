@@ -26,42 +26,40 @@ document.addEventListener("DOMContentLoaded", function () {
     });
     const respData = await resp.json();
     const randomIndex = Math.floor(Math.random() * respData.items.length);
-    console.log(randomIndex);
+
     randomName = respData.items[randomIndex].nameRu; 
-    console.log(randomName);
   }
 
   const randomGo = document.querySelector('.btn-trailer');
   randomGo.addEventListener('click',()=>{
     getRandomMovie(API_URL_RANDOM);
-    getMovies(API_URL_SEARCH+ randomName);
+    getMovies(API_URL_SEARCH + randomName).then(renderMovie);
   })
   //Кнопка с рандомными фильмами
 
   function getRandomItem(arr) {
-    // get random index value
+
     const randomIndex = Math.floor(Math.random() * arr.length);
-    // get random item
     const item = arr[randomIndex];
     return item;
   }
 
-  const movieNames = [
-    "Человек Паук",
-    "Мстители",
-    "Гонка",
-    "Достучаться до небес",
-    "Зеленая миля",
-    "Области тьмы",
-    "Господин Никто",
-  ];
-  btn = document.querySelector(".random-movie");
+  // const movieNames = [
+  //   "Человек Паук",
+  //   "Мстители",
+  //   "Гонка",
+  //   "Достучаться до небес",
+  //   "Зеленая миля",
+  //   "Области тьмы",
+  //   "Господин Никто",
+  // ];
+  // btn = document.querySelector(".random-movie");
 
-  btn.addEventListener("click", () => {
-    const randomUrl = API_URL_SEARCH + getRandomItem(movieNames);
-    // getMovies(API_URL_RANDOM);
-    getMovies(randomUrl);
-  });
+  // btn.addEventListener("click", () => {
+  //   const randomUrl = API_URL_SEARCH + getRandomItem(movieNames);
+  //   // getMovies(API_URL_RANDOM);
+  //   getMovies(randomUrl);
+  // });
   
 
   function setRatingStyle(vote) {
