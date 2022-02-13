@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const API_KEY = "f8ffff42-afff-46c3-8b01-b264f903d02a";
   const API_URL_POPULAR =
     "https://kinopoiskapiunofficial.tech/api/v2.2/films/top?type=TOP_100_POPULAR_FILMS&page=1";
-   getMovies(API_URL_POPULAR).then(renderMovie);
+    getMovies(API_URL_POPULAR).then(renderMovie);
   const API_URL_SEARCH =
     "https://kinopoiskapiunofficial.tech/api/v2.1/films/search-by-keyword?keyword=";
   const API_URL_RANDOM = 
@@ -15,6 +15,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
     const respData = await resp.json();
     return respData;
+    console.log(respData);
   }
 
   let randomName;
@@ -29,8 +30,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     randomName = respData.items[randomIndex].nameRu; 
   }
-
-  const randomGo = document.querySelector('.btn-trailer');
+getRandomMovie(API_URL_RANDOM);
+  const randomGo = document.querySelector('.btn-random');
   randomGo.addEventListener('click',()=>{
     getRandomMovie(API_URL_RANDOM);
     getMovies(API_URL_SEARCH + randomName).then(renderMovie);
@@ -61,31 +62,32 @@ document.addEventListener("DOMContentLoaded", function () {
   //   getMovies(randomUrl);
   // });
   
-
-  function setRatingStyle(vote) {
-    switch (vote) {
-      case vote > 7:
-        return "green";
-      case vote > 5:
-        return "orange";
-      default:
-        return "red";
+  function setRatingStyle(vote){
+    if(vote >= 7){
+      return 'green';
+    }
+    else if (vote  > 5){
+      return 'orange';
+    }
+    else {
+      return 'red';
     }
   }
 
-  const ratingPercentToNumber = (rating) => {
-    const percentChar = "%";
+  // function setRatingStyle(vote) {
+  //   switch (vote) {
+  //     case vote >= 7:
+  //       return "green";
+  //     case vote > 5:
+  //       return "orange";
+  //     default:
+  //       return "red";
+  //   }
+  // }
 
-    if (!rating.includes(percentChar)) return rating;
-
-    const ratingRemovedPercent = rating.replace(percentChar, "");
-    const roundedRating = Math.round(+ratingRemovedPercent).toString();
-
-    return `${roundedRating[0]}.${roundedRating[1]}`;
-  };
-
+  
   const movieHTML = (poster, movieName, rating, genre) => {
-    const parsedRating = ratingPercentToNumber(rating);
+    console.log(rating)
     return `<div class="movie">
       <div class="movie__cover-inner">
           <img src="${poster}" class="movie_cover"
@@ -95,13 +97,14 @@ document.addEventListener("DOMContentLoaded", function () {
       <div class="movie__info">
           ${
                `<a href="https://rezka.ag/search/?do=search&subaction=search&q=${movieName}" target='_blank' class="movie-title">${movieName}</a>`
-          } 
-          <div class="movie-category">${genre}</div>
+          }
+          ${genre !=='' ? ` <div class="movie-category">${genre}</div>` : genre = ''}
+         
           ${
             rating !== "null"
               ? `<div class="movie-average movie-average--${setRatingStyle(
-                  parsedRating
-                )}">${parsedRating}</div>`
+                  rating
+                )}">${rating}</div>`
               : ""
           }
       </div>
@@ -137,4 +140,40 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     search.value = "";
   });
+  const comedyBtn = document.querySelector('.comedy');
+  const thrillerBtn = document.querySelector('.thriller');
+  const dramaBtn = document.querySelector('.drama');
+  console.log(comedyBtn);
+  
+function getRenderAnotherMovie(chosenGenre) {
+
+  function renderAnotherMovie(data) {
+      const movies = document.querySelector(".movies");
+      movies.innerHTML = "";
+      console.log(chosenGenre);
+      data.films.forEach((film) => {
+          if (film.genres[0].genre === chosenGenre.toLowerCase()) {
+              const movieName = film.nameRu;
+              const poster = film.posterUrl;
+              const rating = film.rating;
+              const genre = film.genres[0].genre;
+              movies.insertAdjacentHTML(
+                  "beforeend",
+                  movieHTML(poster, movieName, rating, genre)
+              );
+          }
+      });
+  }
+  return renderAnotherMovie;
+}
+
+comedyBtn.addEventListener('click', () =>{
+  getMovies(API_URL_POPULAR).then(getRenderAnotherMovie(comedyBtn.textContent));
+  })
+dramaBtn.addEventListener('click', () =>{
+  getMovies(API_URL_POPULAR).then(getRenderAnotherMovie(dramaBtn.textContent));
+    })
+thrillerBtn.addEventListener('click', () =>{
+  getMovies(API_URL_POPULAR).then(getRenderAnotherMovie(thrillerBtn.textContent));
+  })
 });
