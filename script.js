@@ -15,7 +15,6 @@ document.addEventListener("DOMContentLoaded", function () {
     });
     const respData = await resp.json();
     return respData;
-    console.log(respData);
   }
 
   let randomName;
@@ -61,33 +60,21 @@ getRandomMovie(API_URL_RANDOM);
   //   // getMovies(API_URL_RANDOM);
   //   getMovies(randomUrl);
   // });
-  
-  function setRatingStyle(vote){
-    if(vote >= 7){
-      return 'green';
-    }
-    else if (vote  > 5){
-      return 'orange';
-    }
-    else {
-      return 'red';
+
+  function setRatingStyle(vote) {
+    let fixedVote = vote.replace('%', '');
+    switch (true) {
+      case fixedVote >= 7:
+        return "green";
+      case fixedVote > 5:
+        return "orange";
+      default:
+        return "red";
     }
   }
 
-  // function setRatingStyle(vote) {
-  //   switch (vote) {
-  //     case vote >= 7:
-  //       return "green";
-  //     case vote > 5:
-  //       return "orange";
-  //     default:
-  //       return "red";
-  //   }
-  // }
-
   
   const movieHTML = (poster, movieName, rating, genre) => {
-    console.log(rating)
     return `<div class="movie">
       <div class="movie__cover-inner">
           <img src="${poster}" class="movie_cover"
@@ -104,7 +91,7 @@ getRandomMovie(API_URL_RANDOM);
             rating !== "null"
               ? `<div class="movie-average movie-average--${setRatingStyle(
                   rating
-                )}">${rating}</div>`
+                )}">${Math.round(rating)}</div>`
               : ""
           }
       </div>
@@ -133,7 +120,6 @@ getRandomMovie(API_URL_RANDOM);
   const search = document.querySelector(".header-search");
   form.addEventListener("submit", (e) => {
     e.preventDefault();
-    console.log(search.value);
     const apiSearchUrl = API_URL_SEARCH + search.value;
     if (search.value) {
       getMovies(apiSearchUrl);
@@ -143,14 +129,12 @@ getRandomMovie(API_URL_RANDOM);
   const comedyBtn = document.querySelector('.comedy');
   const thrillerBtn = document.querySelector('.thriller');
   const dramaBtn = document.querySelector('.drama');
-  console.log(comedyBtn);
   
 function getRenderAnotherMovie(chosenGenre) {
 
   function renderAnotherMovie(data) {
       const movies = document.querySelector(".movies");
       movies.innerHTML = "";
-      console.log(chosenGenre);
       data.films.forEach((film) => {
           if (film.genres[0].genre === chosenGenre.toLowerCase()) {
               const movieName = film.nameRu;
