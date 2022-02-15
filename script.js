@@ -1,5 +1,7 @@
+import {API_KEY} from './api.js';
+
 document.addEventListener("DOMContentLoaded", function () {
-  const API_KEY = "f8ffff42-afff-46c3-8b01-b264f903d02a";
+  
   const API_URL_POPULAR =
     "https://kinopoiskapiunofficial.tech/api/v2.2/films/top?type=TOP_100_POPULAR_FILMS&page=1";
     getMovies(API_URL_POPULAR).then(renderMovie);
